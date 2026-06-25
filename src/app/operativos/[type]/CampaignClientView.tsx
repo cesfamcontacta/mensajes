@@ -582,75 +582,90 @@ export default function CampaignClientView({
 
                   {/* Patient List container */}
                   {!isCollapsed && (
-                    <div className="divide-y divide-slate-100 dark:divide-zinc-800/40">
-                      {dateApps.map((app) => (
-                        <div key={app.id} className="p-5 hover:bg-slate-50/30 dark:hover:bg-zinc-800/10 transition-all flex flex-row items-center justify-between gap-4 pl-14 overflow-x-auto">
-                          <div className="flex items-center gap-4 flex-nowrap whitespace-nowrap text-sm text-slate-700 dark:text-zinc-300">
-                            <span className="font-bold text-slate-900 dark:text-white">{toTitleCase(app.patientName)}</span>
-                            <span className="text-xs text-slate-500 dark:text-zinc-500 bg-slate-100 dark:bg-zinc-800 px-2 py-0.5 rounded font-mono">{app.patientRut}</span>
-                            <span className="text-slate-300 dark:text-zinc-700">|</span>
-                            <span className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-zinc-400">
+                    <div className="overflow-x-auto border-t border-slate-100 dark:border-zinc-800/40">
+                      <div className="min-w-[950px] divide-y divide-slate-100 dark:divide-zinc-800/40">
+                        {/* Header Row */}
+                        <div className="px-5 py-3 bg-slate-50/50 dark:bg-zinc-800/5 text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider flex flex-row items-center gap-4 pl-14 select-none">
+                          <div className="w-64 md:w-72 lg:w-80 shrink-0">Paciente</div>
+                          <div className="w-28 shrink-0 text-center">RUT</div>
+                          <div className="w-24 shrink-0 flex items-center gap-1.5 justify-center">Hora</div>
+                          <div className="w-44 md:w-48 shrink-0">Teléfono</div>
+                          <div className="w-40 md:w-44 shrink-0">Estado</div>
+                          <div className="w-10 shrink-0 text-center">Chat</div>
+                        </div>
+
+                        {dateApps.map((app) => (
+                          <div key={app.id} className="p-5 hover:bg-slate-50/30 dark:hover:bg-zinc-800/10 transition-all flex flex-row items-center gap-4 pl-14 text-sm text-slate-700 dark:text-zinc-300">
+                            <span className="w-64 md:w-72 lg:w-80 shrink-0 font-bold text-slate-900 dark:text-white truncate">{toTitleCase(app.patientName)}</span>
+                            
+                            <span className="w-28 shrink-0 text-xs text-slate-500 dark:text-zinc-500 bg-slate-100 dark:bg-zinc-800 px-2 py-0.5 rounded font-mono text-center">{app.patientRut}</span>
+                            
+                            <span className="w-24 shrink-0 flex items-center gap-1.5 text-xs text-slate-600 dark:text-zinc-400 justify-center">
                               <Clock className="h-3.5 w-3.5 text-slate-400 shrink-0" />
                               {app.time.slice(0, 5)} hrs
                             </span>
-                            <span className="text-slate-300 dark:text-zinc-700">|</span>
-                             <span className="flex items-center gap-2 text-xs text-slate-600 dark:text-zinc-400">
-                               <strong>Teléfono:</strong> {app.phone || 'Sin número'}
-                             </span>
-                             
-                             {app.phone && (
-                               <>
-                                 <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${
-                                   app.status === 'confirmed' 
-                                     ? `text-slate-800 ${theme.lightBg} ${theme.lightBorder} ${theme.lightText}`
-                                     : app.status === 'cancelled'
-                                     ? 'text-red-700 bg-red-50 border-red-200/50 dark:text-red-400 dark:bg-red-950/20 dark:border-red-900/30'
-                                     : app.status === 'sent'
-                                     ? 'text-amber-700 bg-amber-50 border-amber-200/50 dark:text-amber-400 dark:bg-amber-950/20 dark:border-amber-900/30'
-                                     : 'text-slate-700 bg-slate-100 border-slate-200/50 dark:text-zinc-300 dark:bg-zinc-800 dark:border-zinc-700/30'
-                                 }`}>
-                                   {app.status === 'confirmed' ? (
-                                     <>
-                                       <Check className={`h-3.5 w-3.5 ${theme.primaryText} stroke-[3.5px] shrink-0`} />
-                                       <span>Confirmado</span>
-                                     </>
-                                   ) : app.status === 'cancelled' ? (
-                                     <>
-                                       <X className="h-3.5 w-3.5 text-red-500 stroke-[3.5px] shrink-0" />
-                                       <span>Cancelado</span>
-                                     </>
-                                   ) : app.status === 'sent' ? (
-                                     <>
-                                       <X className="h-3.5 w-3.5 text-amber-500 stroke-[3.5px] shrink-0" />
-                                       <span>Pendiente respuesta</span>
-                                     </>
-                                   ) : (
-                                     <>
-                                       <X className="h-3.5 w-3.5 text-slate-950 dark:text-zinc-500 stroke-[3.5px] shrink-0" />
-                                       <span>Pendiente entrega</span>
-                                     </>
-                                   )}
-                                 </span>
-                                 
-                                 <button
-                                   onClick={(e) => {
-                                     e.stopPropagation();
-                                     setActiveChatPatient({ rut: app.patientRut, name: app.patientName, phone: app.phone! });
-                                   }}
-                                   className="inline-flex items-center justify-center p-1 rounded-full text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 transition-all cursor-pointer hover:scale-110"
-                                   title="Ver chat de WhatsApp"
-                                 >
-                                   <svg className="h-4.5 w-4.5 text-emerald-500 shrink-0" style={{ fill: 'currentColor' }} viewBox="0 0 24 24">
-                                     <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.062 5.248 5.308 0 11.785 0c3.148.002 6.107 1.227 8.328 3.45a11.661 11.661 0 0 1 3.447 8.328c-.004 6.539-5.25 11.787-11.725 11.787-2.007-.001-3.978-.515-5.733-1.498L0 24zM6.463 19.348c1.661.985 3.29 1.479 5.318 1.48 5.326 0 9.66-4.329 9.663-9.66.002-2.585-1.005-5.016-2.836-6.848C16.776 3.488 14.346 2.48 11.782 2.48c-5.33 0-9.666 4.33-9.668 9.663-.001 2.093.556 4.122 1.616 5.923l-.978 3.57 3.668-.962zm10.74-5.263c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.669.149-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
-                                   </svg>
-                                 </button>
-                               </>
-                             )}
+                            
+                            <span className="w-44 md:w-48 shrink-0 flex items-center gap-2 text-xs text-slate-600 dark:text-zinc-400">
+                              <strong>Teléfono:</strong> {app.phone || 'Sin número'}
+                            </span>
+                            
+                            <div className="w-40 md:w-44 shrink-0 flex items-center">
+                              {app.phone ? (
+                                <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${
+                                  app.status === 'confirmed' 
+                                    ? `text-slate-800 ${theme.lightBg} ${theme.lightBorder} ${theme.lightText}`
+                                    : app.status === 'cancelled'
+                                    ? 'text-red-700 bg-red-50 border-red-200/50 dark:text-red-400 dark:bg-red-950/20 dark:border-red-900/30'
+                                    : app.status === 'sent'
+                                    ? 'text-amber-700 bg-amber-50 border-amber-200/50 dark:text-amber-400 dark:bg-amber-950/20 dark:border-amber-900/30'
+                                    : 'text-slate-700 bg-slate-100 border-slate-200/50 dark:text-zinc-300 dark:bg-zinc-800 dark:border-zinc-700/30'
+                                }`}>
+                                  {app.status === 'confirmed' ? (
+                                    <>
+                                      <Check className={`h-3.5 w-3.5 ${theme.primaryText} stroke-[3.5px] shrink-0`} />
+                                      <span>Confirmado</span>
+                                    </>
+                                  ) : app.status === 'cancelled' ? (
+                                    <>
+                                      <X className="h-3.5 w-3.5 text-red-500 stroke-[3.5px] shrink-0" />
+                                      <span>Cancelado</span>
+                                    </>
+                                  ) : app.status === 'sent' ? (
+                                    <>
+                                      <X className="h-3.5 w-3.5 text-amber-500 stroke-[3.5px] shrink-0" />
+                                      <span>Pendiente respuesta</span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <X className="h-3.5 w-3.5 text-slate-950 dark:text-zinc-500 stroke-[3.5px] shrink-0" />
+                                      <span>Pendiente entrega</span>
+                                    </>
+                                  )}
+                                </span>
+                              ) : (
+                                <span className="text-xs text-slate-400 dark:text-zinc-600 italic">No disponible</span>
+                              )}
+                            </div>
+                            
+                            <div className="w-10 shrink-0 flex items-center justify-center">
+                              {app.phone && (
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setActiveChatPatient({ rut: app.patientRut, name: app.patientName, phone: app.phone! });
+                                  }}
+                                  className="inline-flex items-center justify-center p-1 rounded-full text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 transition-all cursor-pointer hover:scale-110"
+                                  title="Ver chat de WhatsApp"
+                                >
+                                  <svg className="h-4.5 w-4.5 text-emerald-500 shrink-0" style={{ fill: 'currentColor' }} viewBox="0 0 24 24">
+                                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.062 5.248 5.308 0 11.785 0c3.148.002 6.107 1.227 8.328 3.45a11.661 11.661 0 0 1 3.447 8.328c-.004 6.539-5.25 11.787-11.725 11.787-2.007-.001-3.978-.515-5.733-1.498L0 24zM6.463 19.348c1.661.985 3.29 1.479 5.318 1.48 5.326 0 9.66-4.329 9.663-9.66.002-2.585-1.005-5.016-2.836-6.848C16.776 3.488 14.346 2.48 11.782 2.48c-5.33 0-9.666 4.33-9.668 9.663-.001 2.093.556 4.122 1.616 5.923l-.978 3.57 3.668-.962zm10.74-5.263c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.669.149-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                                  </svg>
+                                </button>
+                              )}
+                            </div>
                           </div>
-
-                          {/* Botón individual de enviar removido para enviar solo a nivel de día o campaña */}
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
