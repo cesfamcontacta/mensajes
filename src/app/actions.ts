@@ -440,8 +440,8 @@ export async function simulatePatientResponse(conversationId: string, text: stri
 
     // Process intent
     const cleanText = text.toLowerCase().trim()
-    const isConfirm = cleanText === 'si' || cleanText === 'sí' || cleanText.includes('confirmo') || cleanText.includes('confirmar')
-    const isCancel = cleanText === 'no' || cleanText.includes('cancelo') || cleanText.includes('cancelar')
+    const isConfirm = cleanText === 'si' || cleanText === 'sí' || cleanText.includes('confirmo') || cleanText.includes('confirmar') || cleanText.includes('asistire') || cleanText.includes('asistiré')
+    const isCancel = cleanText === 'no' || cleanText.includes('cancelo') || cleanText.includes('cancelar') || cleanText.includes('no asistire') || cleanText.includes('no asistiré')
 
     // Find the latest 'sent' appointment for this patient
     const [latestAppointment] = await db.select()

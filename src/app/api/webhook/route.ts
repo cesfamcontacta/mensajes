@@ -161,8 +161,8 @@ export async function POST(request: NextRequest) {
 
         // Process confirmation/cancellation intent
         const cleanText = messageText.toLowerCase().trim()
-        const isConfirm = cleanText === 'si' || cleanText === 'sí' || cleanText.includes('confirmo') || cleanText.includes('confirmar')
-        const isCancel = cleanText === 'no' || cleanText.includes('cancelo') || cleanText.includes('cancelar')
+        const isConfirm = cleanText === 'si' || cleanText === 'sí' || cleanText.includes('confirmo') || cleanText.includes('confirmar') || cleanText.includes('asistire') || cleanText.includes('asistiré')
+        const isCancel = cleanText === 'no' || cleanText.includes('cancelo') || cleanText.includes('cancelar') || cleanText.includes('no asistire') || cleanText.includes('no asistiré')
 
         // Find the latest appointment for this patient
         const [latestAppointment] = await db
