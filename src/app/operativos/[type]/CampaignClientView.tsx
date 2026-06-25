@@ -12,7 +12,7 @@ import {
   simulatePatientResponse,
   deleteAppointmentsByDateAndCampaign
 } from '../../actions'
-import { FileText, Save, Check, Play, Send, Calendar, Clock, Stethoscope, User, AlertCircle, RefreshCw, Settings, ChevronDown, ChevronUp, X } from 'lucide-react'
+import { FileText, Save, Check, CheckCheck, Play, Send, Calendar, Clock, Stethoscope, User, AlertCircle, RefreshCw, Settings, ChevronDown, ChevronUp, X } from 'lucide-react'
 
 const themeConfig: Record<string, {
   primaryBg: string;
@@ -491,8 +491,8 @@ export default function CampaignClientView({
                           <span className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider block">
                             Confirmados
                           </span>
-                          <div className={`flex items-center gap-1 text-xs font-semibold ${theme.primaryText}`}>
-                            <Check className={`h-3.5 w-3.5 ${theme.primaryText} stroke-[3.5px] shrink-0`} />
+                          <div className="flex items-center gap-1 text-xs font-semibold text-green-600 dark:text-green-400">
+                            <CheckCheck className="h-3.5 w-3.5 text-green-500 dark:text-green-400 stroke-[3px] shrink-0" />
                             <span>{confirmedTotal}</span>
                           </div>
                         </div>
@@ -513,8 +513,8 @@ export default function CampaignClientView({
                           <span className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider block whitespace-nowrap">
                             Pendiente respuesta
                           </span>
-                          <div className="flex items-center gap-1 text-xs font-semibold text-amber-600 dark:text-amber-500">
-                            <X className="h-3.5 w-3.5 text-amber-500 stroke-[3.5px] shrink-0" />
+                          <div className="flex items-center gap-1 text-xs font-semibold text-slate-500 dark:text-zinc-400">
+                            <CheckCheck className="h-3.5 w-3.5 text-slate-400 dark:text-zinc-500 stroke-[3px] shrink-0" />
                             <span>{pendingReply}</span>
                           </div>
                         </div>
@@ -524,7 +524,7 @@ export default function CampaignClientView({
                           <span className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider block whitespace-nowrap">
                             Pendiente entrega
                           </span>
-                          <div className="flex items-center gap-1 text-xs font-semibold text-slate-905 dark:text-zinc-300">
+                          <div className="flex items-center gap-1 text-xs font-semibold text-slate-950 dark:text-zinc-300">
                             <X className="h-3.5 w-3.5 text-slate-950 dark:text-zinc-500 stroke-[3.5px] shrink-0" />
                             <span>{pendingDelivery}</span>
                           </div>
@@ -604,16 +604,16 @@ export default function CampaignClientView({
                               {app.phone ? (
                                 <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${
                                   app.status === 'confirmed' 
-                                    ? `text-slate-800 ${theme.lightBg} ${theme.lightBorder} ${theme.lightText}`
+                                    ? 'text-green-700 bg-green-50 border-green-200/50 dark:text-green-400 dark:bg-green-950/20 dark:border-green-900/30'
                                     : app.status === 'cancelled'
                                     ? 'text-red-700 bg-red-50 border-red-200/50 dark:text-red-400 dark:bg-red-950/20 dark:border-red-900/30'
                                     : app.status === 'sent'
-                                    ? 'text-amber-700 bg-amber-50 border-amber-200/50 dark:text-amber-400 dark:bg-amber-950/20 dark:border-amber-900/30'
-                                    : 'text-slate-700 bg-slate-100 border-slate-200/50 dark:text-zinc-300 dark:bg-zinc-800 dark:border-zinc-700/30'
+                                    ? 'text-slate-700 bg-slate-50 border-slate-200/50 dark:text-zinc-300 dark:bg-zinc-800/40 dark:border-zinc-700/30'
+                                    : 'text-slate-700 bg-slate-100 border-slate-200/50 dark:text-zinc-300 dark:bg-zinc-850 dark:border-zinc-700/30'
                                 }`}>
                                   {app.status === 'confirmed' ? (
                                     <>
-                                      <Check className={`h-3.5 w-3.5 ${theme.primaryText} stroke-[3.5px] shrink-0`} />
+                                      <CheckCheck className="h-3.5 w-3.5 text-green-500 dark:text-green-400 stroke-[3px] shrink-0" />
                                       <span>Confirmado</span>
                                     </>
                                   ) : app.status === 'cancelled' ? (
@@ -623,7 +623,7 @@ export default function CampaignClientView({
                                     </>
                                   ) : app.status === 'sent' ? (
                                     <>
-                                      <X className="h-3.5 w-3.5 text-amber-500 stroke-[3.5px] shrink-0" />
+                                      <CheckCheck className="h-3.5 w-3.5 text-slate-400 dark:text-zinc-500 stroke-[3px] shrink-0" />
                                       <span>Pendiente respuesta</span>
                                     </>
                                   ) : (
