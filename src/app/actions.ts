@@ -27,13 +27,21 @@ export async function seedData() {
     await db.delete(schema.campaignTemplate)
     await db.delete(schema.systemUser)
 
-    // Seed default system user
-    await db.insert(schema.systemUser).values({
-      name: 'Claudio Alvarado Muñoz',
-      email: 'claudio@cesfam.cl',
-      role: 'admin',
-      isActive: true,
-    })
+    // Seed default system users (official administrators)
+    await db.insert(schema.systemUser).values([
+      {
+        name: 'Claudio Alvarado Muñoz',
+        email: 'calvarado@munifutrono.cl',
+        role: 'admin',
+        isActive: true,
+      },
+      {
+        name: 'Macarena Caceres',
+        email: 'convenioscesfam@munifutrono.cl',
+        role: 'admin',
+        isActive: true,
+      }
+    ])
 
     // Seed default campaign templates
     const defaultTemplates = [

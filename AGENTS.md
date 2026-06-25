@@ -15,5 +15,9 @@ This version has breaking changes — APIs, conventions, and file structure may 
   2. **Evitar Especificidad Conflictiva de Tailwind**: No uses paddings horizontales combinados con sobreescrituras en la misma línea (por ejemplo, evitar `px-5 pl-14`). En su lugar, usa la declaración explícita de `pl-14 pr-5` en todas las filas para asegurar que la cuadrícula comience exactamente en la misma coordenada horizontal a nivel de píxel.
   3. **Control del Contenido Rígido**: Al definir columnas de cuadrícula con fracciones (`fr`), ten en cuenta que contenidos que no pueden romperse ni encogerse (como botones con `whitespace-nowrap`) forzarán a esa columna a ensancharse en pantallas angostas, distorsionando las proporciones con respecto a otras filas. Asegúrate de darles suficiente peso en la fracción o incrementar el ancho mínimo total para albergar el contenido.
 - **No usar Linear:** En este proyecto NO se utiliza la plataforma Linear para la gestión de tareas o control de cambios. Ignora cualquier credencial o configuración global relacionada con Linear, no intentes consumir su API ni hagas mención de ella.
+- **Administradores del Sistema (Cuentas Oficiales):** Los dos administradores oficiales del sistema son:
+  1. Claudio Alvarado Muñoz (`calvarado@munifutrono.cl`)
+  2. Macarena Caceres (`convenioscesfam@munifutrono.cl`)
+  Siempre que se configuren accesos por defecto o se ejecute el sembrado de la base de datos, se deben registrar ambas cuentas con rol `admin`.
 
 
