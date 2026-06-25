@@ -229,8 +229,9 @@ export async function getConversationMessages(conversationId: string) {
 // Helper function to send messages via the local WhatsApp Web service
 async function sendLocalWhatsAppMessage(to: string, message: string) {
   try {
+    const serviceUrl = process.env.WHATSAPP_SERVICE_URL || 'http://localhost:3001'
     const cleanPhone = to.replace(/[\s\-\+]/g, '').trim()
-    const response = await fetch('http://localhost:3001/send', {
+    const response = await fetch(`${serviceUrl}/send`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ to: cleanPhone, message }),
@@ -1051,7 +1052,8 @@ export async function getCurrentUser() {
 
 export async function getWhatsAppStatus() {
   try {
-    const res = await fetch('http://localhost:3001/status', { cache: 'no-store' })
+    const serviceUrl = process.env.WHATSAPP_SERVICE_URL || 'http://localhost:3001'
+    const res = await fetch(`${serviceUrl}/status`, { cache: 'no-store' })
     return await res.json()
   } catch (e) {
     return { status: 'disconnected', error: 'Service offline' }
@@ -1060,7 +1062,8 @@ export async function getWhatsAppStatus() {
 
 export async function initWhatsAppConnection() {
   try {
-    const res = await fetch('http://localhost:3001/init', { method: 'POST' })
+    const serviceUrl = process.env.WHATSAPP_SERVICE_URL || 'http://localhost:3001'
+    const res = await fetch(`${serviceUrl}/init`, { method: 'POST' })
     return await res.json()
   } catch (e) {
     return { success: false, error: 'Service offline' }
@@ -1069,7 +1072,8 @@ export async function initWhatsAppConnection() {
 
 export async function disconnectWhatsApp() {
   try {
-    const res = await fetch('http://localhost:3001/disconnect', { method: 'POST' })
+    const serviceUrl = process.env.WHATSAPP_SERVICE_URL || 'http://localhost:3001'
+    const res = await fetch(`${serviceUrl}/disconnect`, { method: 'POST' })
     return await res.json()
   } catch (e) {
     return { success: false, error: 'Service offline' }

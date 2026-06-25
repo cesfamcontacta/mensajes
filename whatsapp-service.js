@@ -2,6 +2,8 @@ const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode');
 const fs = require('fs');
 const path = require('path');
+// Load environment variables from .env.local if present
+require('dotenv').config({ path: path.join(__dirname, '.env.local') });
 const http = require('http');
 
 const PORT = 3001;
@@ -146,13 +148,14 @@ function initializeWhatsAppClient() {
     console.log(`[WhatsApp Service] Inbound message from ${cleanPhone}: "${msg.body}"`);
     
     try {
-      // Forward to the Next.js API Webhook endpoint running on port 3000
-      const response = await fetch('http://localhost:3000/api/webhook', {
+      // Forward to the Next.js API Webhook endpoint
+      const webhookUrl = process.env.WEBHOOK_URL || 'http://localhost:3000/api/webhook';
+      const response = await fetch(webhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(webhookPayload)
       });
-      console.log(`[WhatsApp Service] Forwarded to Next.js webhook. Response status: ${response.status}`);
+      console.log(`[WhatsApp Service] Forwarded to Next.js webhook (${webhookUrl}). Response status: ${response.status}`);
     } catch (err) {
       console.error('[WhatsApp Service] Webhook forward error:', err.message);
     }
