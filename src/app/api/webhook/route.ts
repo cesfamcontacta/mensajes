@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/db/db'
 import * as schema from '@/db/schema'
-import { eq, desc } from 'drizzle-orm'
+import { eq, desc, or } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 
 // Verification endpoint for Meta (GET)
@@ -99,27 +99,38 @@ export async function POST(request: NextRequest) {
 
         console.log(`[Webhook Message Inbound]: From ${phone} (Type: ${messageType}): "${messageText}"`)
 
-        // Find or create conversation for this phone/patient
+        // Find or create conversation for this phone/patient (with or without '+')
+        const phoneWithPlus = phone.startsWith('+') ? phone : `+${phone}`
+        const phoneWithoutPlus = phone.replace('+', '')
+
         let [conv] = await db
           .select()
           .from(schema.conversation)
-          .where(eq(schema.conversation.phone, phone))
+          .where(
+            or(
+              eq(schema.conversation.phone, phoneWithPlus),
+              eq(schema.conversation.phone, phoneWithoutPlus)
+            )
+          )
           .limit(1)
 
         if (!conv) {
-          // Attempt to find patient by phone number format
-          // Strip any leading '+' if present
-          const cleanPhone = phone.replace('+', '')
+          // Attempt to find patient by phone number format (with or without '+')
           let [patientObj] = await db
             .select()
             .from(schema.patient)
-            .where(eq(schema.patient.primaryPhone, cleanPhone))
+            .where(
+              or(
+                eq(schema.patient.primaryPhone, phoneWithPlus),
+                eq(schema.patient.primaryPhone, phoneWithoutPlus)
+              )
+            )
             .limit(1)
 
           if (!patientObj) {
             // Find by partial phone or create anonymous patient if not found
             // For now, let's create a stub patient if we don't have one
-            const stubRut = `TEMP-${phone}`
+            const stubRut = `TEMP-${phoneWithoutPlus}`
             const [newPatient] = await db
               .insert(schema.patient)
               .values({
@@ -128,7 +139,7 @@ export async function POST(request: NextRequest) {
                 givenName: 'Nuevo',
                 displayName: 'Nuevo Paciente',
                 fullName: 'Nuevo Paciente',
-                primaryPhone: cleanPhone,
+                primaryPhone: phoneWithoutPlus,
               })
               .returning()
             patientObj = newPatient
@@ -139,7 +150,7 @@ export async function POST(request: NextRequest) {
             .values({
               patientId: patientObj.id,
               patientRut: patientObj.rut,
-              phone: phone,
+              phone: patientObj.primaryPhone || phone,
               patientName: patientObj.fullName,
               unreadCount: 0,
             })
@@ -161,8 +172,8 @@ export async function POST(request: NextRequest) {
 
         // Process confirmation/cancellation intent
         const cleanText = messageText.toLowerCase().trim()
-        const isConfirm = cleanText === 'si' || cleanText === 'sí' || cleanText.includes('confirmo') || cleanText.includes('confirmar') || cleanText.includes('asistire') || cleanText.includes('asistiré')
-        const isCancel = cleanText === 'no' || cleanText.includes('cancelo') || cleanText.includes('cancelar') || cleanText.includes('no asistire') || cleanText.includes('no asistiré')
+        const isConfirm = cleanText === 'si' || cleanText === 'sí' || cleanText === '1' || /^1[\s\.,]/.test(cleanText) || cleanText.includes('confirmo') || cleanText.includes('confirmar') || cleanText.includes('asistire') || cleanText.includes('asistiré')
+        const isCancel = cleanText === 'no' || cleanText === '2' || /^2[\s\.,]/.test(cleanText) || cleanText.includes('cancelo') || cleanText.includes('cancelar') || cleanText.includes('no asistire') || cleanText.includes('no asistiré')
 
         // Find the latest appointment for this patient
         const [latestAppointment] = await db

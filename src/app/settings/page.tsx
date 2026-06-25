@@ -14,7 +14,8 @@ import {
   FileText,
   Info,
   Pencil,
-  X
+  X,
+  MessageCircle
 } from 'lucide-react'
 import { 
   getSystemUsers, 
@@ -24,7 +25,10 @@ import {
   getAllCampaignTemplates, 
   createCampaign, 
   deleteCampaign,
-  saveCampaignTemplate
+  saveCampaignTemplate,
+  getWhatsAppStatus,
+  initWhatsAppConnection,
+  disconnectWhatsApp
 } from '@/app/actions'
 
 interface User {
@@ -44,10 +48,63 @@ interface Campaign {
 }
 
 export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState<'users' | 'campaigns'>('users')
+  const [activeTab, setActiveTab] = useState<'users' | 'campaigns' | 'whatsapp'>('users')
   const [users, setUsers] = useState<User[]>([])
   const [campaigns, setCampaigns] = useState<Campaign[]>([])
   const [isPending, startTransition] = useTransition()
+
+  // WhatsApp connection state
+  const [whatsappState, setWhatsappState] = useState<{
+    status: 'disconnected' | 'loading' | 'qr' | 'connected'
+    phone?: string
+    error?: string
+    qr?: string | null
+  }>({ status: 'disconnected' })
+  const [isWaActionPending, setIsWaActionPending] = useState(false)
+
+  // Poll status every 4 seconds when tab is active
+  useEffect(() => {
+    if (activeTab !== 'whatsapp') return
+
+    const checkStatus = async () => {
+      const status = await getWhatsAppStatus()
+      setWhatsappState(status)
+    }
+
+    checkStatus() // check immediately
+    const interval = setInterval(checkStatus, 4000)
+    return () => clearInterval(interval)
+  }, [activeTab])
+
+  const handleInitWhatsApp = async () => {
+    setIsWaActionPending(true)
+    try {
+      await initWhatsAppConnection()
+      // Wait a bit and refresh status
+      setTimeout(async () => {
+        const status = await getWhatsAppStatus()
+        setWhatsappState(status)
+        setIsWaActionPending(false)
+      }, 1000)
+    } catch (e) {
+      setIsWaActionPending(false)
+    }
+  }
+
+  const handleDisconnectWhatsApp = async () => {
+    if (!confirm('¿Estás seguro de que deseas desconectar tu cuenta de WhatsApp?')) return
+    setIsWaActionPending(true)
+    try {
+      await disconnectWhatsApp()
+      setTimeout(async () => {
+        const status = await getWhatsAppStatus()
+        setWhatsappState(status)
+        setIsWaActionPending(false)
+      }, 1500)
+    } catch (e) {
+      setIsWaActionPending(false)
+    }
+  }
 
   // User form state
   const [userName, setUserName] = useState('')
@@ -261,6 +318,17 @@ export default function SettingsPage() {
         >
           <Megaphone className="h-4 w-4" />
           Gestión de Campañas
+        </button>
+        <button
+          onClick={() => setActiveTab('whatsapp')}
+          className={`flex items-center gap-2 px-6 py-3 border-b-2 text-sm font-semibold transition-all ${
+            activeTab === 'whatsapp'
+              ? 'border-emerald-500 text-emerald-600 dark:text-emerald-400'
+              : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-zinc-200'
+          }`}
+        >
+          <MessageCircle className="h-4 w-4" />
+          Conexión WhatsApp
         </button>
       </div>
 
@@ -691,6 +759,141 @@ export default function SettingsPage() {
               )}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Tab: WhatsApp */}
+      {activeTab === 'whatsapp' && (
+        <div className="bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-slate-200/60 dark:border-zinc-800/50 shadow-sm max-w-2xl mx-auto space-y-6 animate-fade-in">
+          <div className="flex items-center justify-between border-b border-slate-100 dark:border-zinc-800/80 pb-4">
+            <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <MessageCircle className="h-6 w-6 text-emerald-500" />
+              Conexión WhatsApp Web (Código QR)
+            </h2>
+            
+            {/* Status Badge */}
+            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
+              whatsappState.status === 'connected'
+                ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+                : whatsappState.status === 'qr'
+                ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 font-medium animate-pulse'
+                : whatsappState.status === 'loading'
+                ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+                : 'bg-slate-100 text-slate-600 dark:bg-zinc-800 dark:text-zinc-400'
+            }`}>
+              <span className={`h-2 w-2 rounded-full ${
+                whatsappState.status === 'connected'
+                  ? 'bg-emerald-500'
+                  : whatsappState.status === 'qr'
+                  ? 'bg-amber-500'
+                  : whatsappState.status === 'loading'
+                  ? 'bg-blue-500'
+                  : 'bg-slate-400'
+              }`} />
+              {whatsappState.status === 'connected'
+                ? 'Conectado'
+                : whatsappState.status === 'qr'
+                ? 'Esperando escaneo QR'
+                : whatsappState.status === 'loading'
+                ? 'Cargando...'
+                : 'Desconectado'}
+            </span>
+          </div>
+
+          <div className="space-y-4">
+            <p className="text-sm text-slate-600 dark:text-zinc-400 leading-relaxed">
+              Esta sección te permite vincular el sistema directamente con tu propio número de WhatsApp (personal o institucional) mediante código QR. Al hacerlo, el sistema enviará los recordatorios de citas usando tu celular, sin necesidad de verificar tu cuenta con Meta ni pagar por mensaje.
+            </p>
+          </div>
+
+          {/* Conditional Layouts based on status */}
+          {whatsappState.status === 'disconnected' && (
+            <div className="bg-slate-50 dark:bg-zinc-950 p-6 rounded-2xl border border-slate-200/50 dark:border-zinc-850/30 text-center space-y-4">
+              <div className="max-w-md mx-auto space-y-2">
+                <p className="text-xs text-slate-500 dark:text-zinc-500">
+                  Para iniciar, haz clic en el botón de abajo. Se abrirá una sesión interna y generaremos un código QR que deberás escanear con la app de WhatsApp de tu celular.
+                </p>
+              </div>
+              <button
+                disabled={isWaActionPending}
+                onClick={handleInitWhatsApp}
+                className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 disabled:bg-slate-300 dark:disabled:bg-zinc-800 text-white font-semibold text-sm rounded-xl shadow-md transition-all cursor-pointer"
+              >
+                {isWaActionPending ? 'Cargando...' : 'Iniciar Conexión y Generar QR'}
+              </button>
+            </div>
+          )}
+
+          {whatsappState.status === 'loading' && (
+            <div className="bg-slate-50 dark:bg-zinc-950 p-12 rounded-2xl border border-slate-200/50 dark:border-zinc-850/30 flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+              <div>
+                <p className="text-sm font-semibold text-slate-800 dark:text-zinc-200">Abriendo navegador de WhatsApp...</p>
+                <p className="text-xs text-slate-500 dark:text-zinc-500 mt-1">Por favor espera unos segundos. Esto puede tardar si es la primera vez.</p>
+              </div>
+            </div>
+          )}
+
+          {whatsappState.status === 'qr' && (
+            <div className="bg-slate-50 dark:bg-zinc-950 p-6 rounded-2xl border border-slate-200/50 dark:border-zinc-850/30 flex flex-col lg:flex-row items-center gap-8">
+              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-center shrink-0">
+                {/* QR Code Image (fetched from public/whatsapp-qr.png) */}
+                <img
+                  src={`/whatsapp-qr.png?t=${new Date().getTime()}`}
+                  alt="WhatsApp QR Code"
+                  className="w-48 h-48 block"
+                />
+              </div>
+              <div className="space-y-4 text-left">
+                <h3 className="font-bold text-slate-900 dark:text-white">Escanea el código QR para vincular:</h3>
+                <ol className="list-decimal list-inside text-xs text-slate-600 dark:text-zinc-400 space-y-2">
+                  <li>Abre WhatsApp en tu teléfono celular.</li>
+                  <li>Toca el botón de Menú o Configuración y selecciona <strong>Dispositivos vinculados</strong>.</li>
+                  <li>Toca en <strong>Vincular un dispositivo</strong>.</li>
+                </ol>
+                <div className="pt-2 flex gap-3">
+                  <button
+                    disabled={isWaActionPending}
+                    onClick={handleDisconnectWhatsApp}
+                    className="px-4 py-2 border border-slate-200 dark:border-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-900 text-slate-700 dark:text-zinc-300 font-semibold text-xs rounded-lg transition-all cursor-pointer"
+                  >
+                    Cancelar / Desconectar
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {whatsappState.status === 'connected' && (
+            <div className="bg-emerald-500/10 dark:bg-emerald-500/5 p-6 rounded-2xl border border-emerald-500/20 text-center space-y-4">
+              <div className="space-y-1">
+                <p className="text-sm font-bold text-emerald-800 dark:text-emerald-400">
+                  ¡WhatsApp Vinculado Exitosamente!
+                </p>
+                {whatsappState.phone && (
+                  <p className="text-xs text-slate-600 dark:text-zinc-400">
+                    Número conectado: <strong className="font-semibold font-mono">+{whatsappState.phone}</strong>
+                  </p>
+                )}
+              </div>
+              <div className="pt-2">
+                <button
+                  disabled={isWaActionPending}
+                  onClick={handleDisconnectWhatsApp}
+                  className="px-5 py-2 bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white font-semibold text-xs rounded-xl shadow-md transition-all cursor-pointer"
+                >
+                  {isWaActionPending ? 'Cargando...' : 'Desconectar Dispositivo'}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {whatsappState.error && (
+            <div className="bg-rose-50 dark:bg-rose-950/20 p-4 rounded-xl border border-rose-200 dark:border-rose-900/30 text-rose-700 dark:text-rose-400 text-xs flex items-start gap-2">
+              <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
+              <span>Error: {whatsappState.error}</span>
+            </div>
+          )}
         </div>
       )}
     </div>

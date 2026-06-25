@@ -226,39 +226,21 @@ export async function getConversationMessages(conversationId: string) {
   }
 }
 
-// Helper function to call the Meta WhatsApp Business Cloud API
-async function callWhatsAppApi(to: string, payload: any) {
-  const token = process.env.WHATSAPP_ACCESS_TOKEN
-  const phoneId = process.env.WHATSAPP_PHONE_NUMBER_ID
-  if (!token || !phoneId) {
-    console.log('[WhatsApp API Setup] Credentials not configured in .env.local. Operating in Simulation Mode.')
-    return null
-  }
-
+// Helper function to send messages via the local WhatsApp Web service
+async function sendLocalWhatsAppMessage(to: string, message: string) {
   try {
-    // Standardize phone number format for Chile (e.g. +56-9-3462-1210 -> 56934621210)
     const cleanPhone = to.replace(/[\s\-\+]/g, '').trim()
-    const url = `https://graph.facebook.com/v22.0/${phoneId}/messages`
-
-    const response = await fetch(url, {
+    const response = await fetch('http://localhost:3001/send', {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        messaging_product: 'whatsapp',
-        to: cleanPhone,
-        ...payload,
-      }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ to: cleanPhone, message }),
     })
-
     const data = await response.json()
-    console.log('[WhatsApp API Response]:', JSON.stringify(data, null, 2))
+    console.log('[Local WhatsApp Service Response]:', JSON.stringify(data, null, 2))
     return data
   } catch (error) {
-    console.error('[WhatsApp API Request Error]:', error)
-    return null
+    console.error('[Local WhatsApp Send Error]:', error)
+    return { success: false, error: String(error) }
   }
 }
 
@@ -376,53 +358,8 @@ export async function sendWhatsAppNotification(appointmentId: string) {
       lastMessagePreview: `Notificación enviada: ${app.service}`,
     }).where(eq(schema.conversation.id, conv.id))
 
-    // 6. Make the real WhatsApp Cloud API Call using our approved Meta Template
-    if (process.env.WHATSAPP_ACCESS_TOKEN && process.env.WHATSAPP_PHONE_NUMBER_ID) {
-      let formattedDate = app.date || '';
-      if (formattedDate.includes('-')) {
-        const parts = formattedDate.split('-');
-        if (parts.length === 3 && parts[0].length === 4) {
-          formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
-        }
-      }
-
-      // Extract first name and title case
-      const firstNameRaw = (app.patientName || '').trim().split(' ')[0] || '';
-      const firstName = firstNameRaw.charAt(0).toUpperCase() + firstNameRaw.slice(1).toLowerCase();
-      
-      const campaignName = campaignType === 'mamografias' ? 'Mamografías' : 
-                           campaignType === 'ecografia-mamaria' ? 'Ecografía Mamaria' :
-                           campaignType === 'ecografia-abdominal' ? 'Ecografía Abdominal' :
-                           campaignType === 'oftalmologia' ? 'Oftalmología' :
-                           campaignType === 'otorrino' ? 'Otorrino' : (app.service || 'Operativo Médico');
-
-      // The observations/indicaciones variables mapping
-      const observationsText = app.observations || 'Favor presentarse 15 minutos antes.';
-
-      const payload = {
-        type: 'template',
-        template: {
-          name: 'reminder_operative_v2',
-          language: {
-            code: 'es' // Spanish
-          },
-          components: [
-            {
-              type: 'body',
-              parameters: [
-                { type: 'text', text: firstName },              // {{1}}
-                { type: 'text', text: campaignName },           // {{2}}
-                { type: 'text', text: formattedDate },          // {{3}}
-                { type: 'text', text: (app.time || '').slice(0, 5) }, // {{4}}
-                { type: 'text', text: app.establecimiento || 'CESFAM' }  // {{5}}
-              ]
-            }
-          ]
-        }
-      }
-      
-      callWhatsAppApi(conv.phone, payload)
-    }
+    // 6. Make the real WhatsApp Call using our local WhatsApp Web service
+    await sendLocalWhatsAppMessage(conv.phone, messageContent)
 
     revalidatePath('/')
     return { success: true, message: msg }
@@ -1023,16 +960,8 @@ export async function sendOutboundMessage(conversationId: string, text: string) 
       lastMessageAt: new Date(),
     }).where(eq(schema.conversation.id, conversationId))
 
-    // Call WhatsApp API for manual outbound text message replies (requires session window open)
-    if (process.env.WHATSAPP_ACCESS_TOKEN && process.env.WHATSAPP_PHONE_NUMBER_ID) {
-      const payload = {
-        type: 'text',
-        text: {
-          body: text
-        }
-      }
-      callWhatsAppApi(conv.phone, payload)
-    }
+    // Call local WhatsApp service for manual outbound text message replies
+    await sendLocalWhatsAppMessage(conv.phone, text)
 
     revalidatePath('/')
     return { success: true }
@@ -1117,6 +1046,33 @@ export async function getCurrentUser() {
   } catch (error) {
     console.error('Error retrieving current user:', error)
     return null
+  }
+}
+
+export async function getWhatsAppStatus() {
+  try {
+    const res = await fetch('http://localhost:3001/status', { cache: 'no-store' })
+    return await res.json()
+  } catch (e) {
+    return { status: 'disconnected', error: 'Service offline' }
+  }
+}
+
+export async function initWhatsAppConnection() {
+  try {
+    const res = await fetch('http://localhost:3001/init', { method: 'POST' })
+    return await res.json()
+  } catch (e) {
+    return { success: false, error: 'Service offline' }
+  }
+}
+
+export async function disconnectWhatsApp() {
+  try {
+    const res = await fetch('http://localhost:3001/disconnect', { method: 'POST' })
+    return await res.json()
+  } catch (e) {
+    return { success: false, error: 'Service offline' }
   }
 }
 

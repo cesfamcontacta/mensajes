@@ -296,6 +296,8 @@ export default function CampaignClientView({
         setAppointments(prev => prev.map(a => 
           a.id === app.id ? { ...a, status: 'sent', sentAt: new Date() } : a
         ))
+        // Esperar 5 segundos entre cada envío para evitar bloqueos de cuenta (spam)
+        await new Promise(resolve => setTimeout(resolve, 5000))
       }
     } catch (err) {
       console.error(err)
@@ -323,6 +325,8 @@ export default function CampaignClientView({
         setAppointments(prev => prev.map(a => 
           a.id === app.id ? { ...a, status: 'sent', sentAt: new Date() } : a
         ))
+        // Esperar 5 segundos entre cada envío para evitar bloqueos de cuenta (spam)
+        await new Promise(resolve => setTimeout(resolve, 5000))
       }
     } catch (err) {
       console.error(err)
