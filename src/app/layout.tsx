@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import Link from 'next/link'
-import { LayoutDashboard, Calendar, MessageSquare, ShieldAlert, Settings } from 'lucide-react'
+import { LayoutDashboard, Calendar, MessageSquare, Settings } from 'lucide-react'
 import { getAllCampaignTemplates } from '@/app/actions'
 
 const geistSans = Geist({
@@ -123,19 +123,7 @@ export default async function RootLayout({
             </div>
           </nav>
 
-          <div className="p-4 border-t border-slate-200/80 dark:border-zinc-800/80">
-            <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200/50 dark:border-amber-900/30 rounded-xl p-3 flex items-start gap-2.5">
-              <ShieldAlert className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
-              <div className="text-xs">
-                <span className="font-semibold text-amber-800 dark:text-amber-300 block">
-                  Modo Local
-                </span>
-                <span className="text-amber-700/80 dark:text-amber-400/80 block mt-0.5">
-                  Base de datos y simulaciones activas.
-                </span>
-              </div>
-            </div>
-          </div>
+          {/* Modo Local indicator card removed */}
         </aside>
 
         {/* Main Content Area */}
