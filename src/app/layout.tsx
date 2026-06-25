@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import Link from 'next/link'
-import { LayoutDashboard, Calendar, MessageSquare, Settings } from 'lucide-react'
-import { getAllCampaignTemplates } from '@/app/actions'
+import { LayoutDashboard, Calendar, MessageSquare, Settings, LogOut } from 'lucide-react'
+import { getAllCampaignTemplates, getCurrentUser, logoutAction } from '@/app/actions'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -33,7 +33,23 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const user = await getCurrentUser()
   const campaigns = await getAllCampaignTemplates()
+
+  if (!user) {
+    return (
+      <html
+        lang="es"
+        className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      >
+        <body className="min-h-full flex bg-slate-50 dark:bg-zinc-950 text-slate-800 dark:text-zinc-100 font-sans">
+          <main className="flex-1 w-full">
+            {children}
+          </main>
+        </body>
+      </html>
+    )
+  }
 
   return (
     <html
@@ -123,7 +139,32 @@ export default async function RootLayout({
             </div>
           </nav>
 
-          {/* Modo Local indicator card removed */}
+          {/* User Profile Info & Logout */}
+          <div className="p-4 border-t border-slate-200/80 dark:border-zinc-800/80 bg-slate-50/50 dark:bg-zinc-900/10">
+            <div className="flex items-center gap-3 px-2">
+              <div className="h-9 w-9 rounded-full bg-slate-100 dark:bg-zinc-800 border border-slate-200/60 dark:border-zinc-700/50 flex items-center justify-center text-slate-600 dark:text-zinc-300 font-bold shrink-0">
+                {user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
+              </div>
+              <div className="min-w-0 flex-1">
+                <span className="block text-xs font-bold text-slate-800 dark:text-zinc-200 truncate">
+                  {user.name}
+                </span>
+                <span className="block text-[10px] text-slate-400 dark:text-zinc-500 font-semibold uppercase tracking-wider">
+                  {user.role === 'admin' ? 'Administrador' : 'Operador'}
+                </span>
+              </div>
+            </div>
+
+            <form action={logoutAction} className="mt-3">
+              <button
+                type="submit"
+                className="w-full flex items-center gap-3 px-3 py-2 text-xs font-semibold rounded-xl text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 hover:text-red-500 transition-all cursor-pointer group"
+              >
+                <LogOut className="h-4 w-4 text-red-400 group-hover:text-red-500 transition-colors shrink-0" />
+                Cerrar sesión
+              </button>
+            </form>
+          </div>
         </aside>
 
         {/* Main Content Area */}
