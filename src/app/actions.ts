@@ -1032,3 +1032,22 @@ export async function sendOutboundMessage(conversationId: string, text: string) 
   }
 }
 
+export async function deleteAppointmentsByDateAndCampaign(campaignType: string, dateStr: string) {
+  try {
+    const campaignApps = await getAppointmentsByCampaign(campaignType)
+    const appsToDelete = campaignApps.filter(app => (app.date || 'Sin Fecha') === dateStr)
+    
+    for (const app of appsToDelete) {
+      await db.delete(schema.messageHistory).where(eq(schema.messageHistory.appointmentId, app.id))
+      await db.delete(schema.appointment).where(eq(schema.appointment.id, app.id))
+    }
+    
+    revalidatePath('/')
+    return { success: true, count: appsToDelete.length }
+  } catch (error) {
+    console.error('Error deleting appointments by date and campaign:', error)
+    return { success: false, error: String(error) }
+  }
+}
+
+

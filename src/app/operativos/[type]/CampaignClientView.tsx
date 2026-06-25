@@ -9,7 +9,8 @@ import {
   getOrCreateConversationForPatient,
   getConversationMessages,
   sendOutboundMessage,
-  simulatePatientResponse
+  simulatePatientResponse,
+  deleteAppointmentsByDateAndCampaign
 } from '../../actions'
 import { FileText, Save, Check, Play, Send, Calendar, Clock, Stethoscope, User, AlertCircle, RefreshCw, Settings, ChevronDown, ChevronUp, X } from 'lucide-react'
 
@@ -149,6 +150,7 @@ export default function CampaignClientView({
   // Group-by-date state
   const [collapsedDates, setCollapsedDates] = useState<Record<string, boolean>>({})
   const [sendingDate, setSendingDate] = useState<string | null>(null)
+  const [deletingDate, setDeletingDate] = useState<string | null>(null)
 
   const toggleDateCollapse = (dateStr: string) => {
     setCollapsedDates(prev => ({
@@ -326,6 +328,28 @@ export default function CampaignClientView({
       console.error(err)
     } finally {
       setSendingDate(null)
+    }
+  }
+
+  const handleDeleteAllForDate = async (dateStr: string) => {
+    const dateApps = appointments.filter(app => (app.date || 'Sin Fecha') === dateStr)
+    if (!confirm(`¿Estás seguro de que deseas ELIMINAR COMPLETAMENTE las ${dateApps.length} citas agendadas para el día ${formatReadableDate(dateStr)}? Esta acción no se puede deshacer.`)) {
+      return
+    }
+
+    setDeletingDate(dateStr)
+    try {
+      const res = await deleteAppointmentsByDateAndCampaign(campaignType, dateStr)
+      if (res.success) {
+        setAppointments(prev => prev.filter(app => (app.date || 'Sin Fecha') !== dateStr))
+      } else {
+        alert(res.error || 'Error al eliminar las citas')
+      }
+    } catch (err) {
+      console.error(err)
+      alert('Error de conexión')
+    } finally {
+      setDeletingDate(null)
     }
   }
 
@@ -522,7 +546,7 @@ export default function CampaignClientView({
                       {pendingDelivery > 0 && (
                         <button
                           onClick={() => handleSendAllForDate(dateStr)}
-                          disabled={sendingDate !== null || sendingAll}
+                          disabled={sendingDate !== null || sendingAll || deletingDate !== null}
                           className={`inline-flex items-center gap-1 px-2.5 py-1 ${theme.primaryBg} ${theme.primaryHoverBg} disabled:opacity-50 text-white text-[10px] font-bold rounded-lg shadow-sm transition-all cursor-pointer`}
                         >
                           {sendingDate === dateStr ? (
@@ -536,6 +560,23 @@ export default function CampaignClientView({
                           )}
                         </button>
                       )}
+
+                      {/* Delete Day Action */}
+                      <button
+                        onClick={() => handleDeleteAllForDate(dateStr)}
+                        disabled={deletingDate !== null || sendingDate !== null || sendingAll}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white text-[10px] font-bold rounded-lg shadow-sm transition-all cursor-pointer"
+                      >
+                        {deletingDate === dateStr ? (
+                          <>
+                            <RefreshCw className="h-3 w-3 animate-spin" /> Eliminando...
+                          </>
+                        ) : (
+                          <>
+                            <X className="h-2.5 w-2.5 stroke-[3px]" /> Eliminar día
+                          </>
+                        )}
+                      </button>
                     </div>
                   </div>
 
