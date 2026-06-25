@@ -118,11 +118,6 @@ export default async function ChatPage({ searchParams }: PageProps) {
                               : 'bg-emerald-600 text-white rounded-tr-none'
                           }`}
                         >
-                          {msg.templateName && (
-                            <span className="block text-[10px] opacity-75 uppercase font-bold tracking-wider mb-1">
-                              Plantilla: {msg.templateName}
-                            </span>
-                          )}
                           <p>{msg.content}</p>
                           <div className="flex items-center justify-end gap-1.5 mt-2 text-[9px] opacity-70">
                             <Clock className="h-3 w-3" />

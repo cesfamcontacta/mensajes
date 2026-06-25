@@ -719,11 +719,6 @@ export default function CampaignClientView({
                             : 'bg-emerald-50 dark:bg-emerald-950/30 text-slate-800 dark:text-zinc-200 rounded-tr-none border border-emerald-100/50 dark:border-emerald-900/20'
                         }`}
                       >
-                        {msg.templateName && (
-                          <span className="block text-[8px] opacity-75 uppercase font-bold tracking-wider mb-0.5">
-                            Plantilla: {msg.templateName}
-                          </span>
-                        )}
                         <p className="whitespace-pre-line">{msg.content}</p>
                         <span className="block text-[8px] opacity-60 text-right mt-1">
                           {msg.status === 'received' ? 'Recibido' : msg.status}
