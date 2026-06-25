@@ -442,42 +442,42 @@ export default function CampaignClientView({
           )}
         </div>
 
-        <div className="divide-y divide-slate-100 dark:divide-zinc-800/50">
-          {appointments.length === 0 ? (
-            <div className="p-12 text-center text-slate-500 dark:text-zinc-500">
-              <AlertCircle className="h-12 w-12 mx-auto text-slate-400 mb-4 opacity-50" />
-              <p className="font-medium">No hay citas para {campaignTitle} en este momento.</p>
-              <p className="text-sm mt-1 text-slate-400">Prueba importando un archivo Excel con pacientes en esta especialidad.</p>
-            </div>
-          ) : (
-            sortedDates.map((dateStr) => {
-              const dateApps = groupedAppointments[dateStr] || []
-              const total = dateApps.length
-              const sentTotal = dateApps.filter(a => a.status !== 'pending').length
-              const confirmedTotal = dateApps.filter(a => a.status === 'confirmed').length
-              const cancelledTotal = dateApps.filter(a => a.status === 'cancelled').length
-              const pendingDelivery = dateApps.filter(a => a.status === 'pending').length
-              const pendingReply = dateApps.filter(a => a.status === 'sent').length
-              const isCollapsed = collapsedDates[dateStr] ?? false
+        <div className="overflow-x-auto">
+          <div className="min-w-[950px] divide-y divide-slate-100 dark:divide-zinc-800/50">
+            {appointments.length === 0 ? (
+              <div className="p-12 text-center text-slate-500 dark:text-zinc-500">
+                <AlertCircle className="h-12 w-12 mx-auto text-slate-400 mb-4 opacity-50" />
+                <p className="font-medium">No hay citas para {campaignTitle} en este momento.</p>
+                <p className="text-sm mt-1 text-slate-400">Prueba importando un archivo Excel con pacientes en esta especialidad.</p>
+              </div>
+            ) : (
+              sortedDates.map((dateStr) => {
+                const dateApps = groupedAppointments[dateStr] || []
+                const total = dateApps.length
+                const sentTotal = dateApps.filter(a => a.status !== 'pending').length
+                const confirmedTotal = dateApps.filter(a => a.status === 'confirmed').length
+                const cancelledTotal = dateApps.filter(a => a.status === 'cancelled').length
+                const pendingDelivery = dateApps.filter(a => a.status === 'pending').length
+                const pendingReply = dateApps.filter(a => a.status === 'sent').length
+                const isCollapsed = collapsedDates[dateStr] ?? false
 
-              return (
-                <div key={dateStr} className="border-b border-slate-100 dark:border-zinc-800/50 last:border-b-0">
-                  {/* Date Header Accordion Trigger */}
-                  <div 
-                    onClick={() => toggleDateCollapse(dateStr)}
-                    className="w-full px-6 py-4 bg-slate-50/50 dark:bg-zinc-900/30 hover:bg-slate-50 dark:hover:bg-zinc-900/50 transition-all flex items-center justify-between flex-wrap gap-6 cursor-pointer select-none"
-                  >
-                    <div className="flex-1 flex items-center gap-3 min-w-0">
+                return (
+                  <div key={dateStr} className="border-b border-slate-100 dark:border-zinc-800/50 last:border-b-0">
+                    {/* Date Header Accordion Trigger */}
+                    <div 
+                      onClick={() => toggleDateCollapse(dateStr)}
+                      className="w-full pl-6 pr-5 py-4 bg-slate-50/50 dark:bg-zinc-900/30 hover:bg-slate-50 dark:hover:bg-zinc-900/50 transition-all flex items-center justify-between gap-3 cursor-pointer select-none"
+                    >
                       {isCollapsed ? (
                         <ChevronDown className="h-5 w-5 text-slate-400 shrink-0" />
                       ) : (
                         <ChevronUp className="h-5 w-5 text-slate-400 shrink-0" />
                       )}
                       
-                      {/* 5-Column Grid */}
-                      <div className="flex-1 grid grid-cols-12 gap-4 items-center">
-                        {/* Col 1: Fecha (col-span-4) */}
-                        <div className="col-span-4 space-y-1">
+                      {/* Aligned Grid */}
+                      <div className="flex-1 grid grid-cols-[2.8fr_1.8fr_1.8fr_1.8fr_1.8fr_3fr] gap-4 items-center">
+                        {/* Col 1: Fecha */}
+                        <div className="space-y-1">
                           <span className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider block">
                             Fecha
                           </span>
@@ -486,8 +486,8 @@ export default function CampaignClientView({
                           </h3>
                         </div>
 
-                        {/* Col 2: Confirmados (col-span-2) */}
-                        <div className="col-span-2 space-y-1 flex flex-col items-center">
+                        {/* Col 2: Confirmados */}
+                        <div className="space-y-1 flex flex-col items-center">
                           <span className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider block text-center">
                             Confirmados
                           </span>
@@ -497,8 +497,8 @@ export default function CampaignClientView({
                           </div>
                         </div>
 
-                        {/* Col 3: Cancelados (col-span-2) */}
-                        <div className="col-span-2 space-y-1 flex flex-col items-center">
+                        {/* Col 3: Cancelados */}
+                        <div className="space-y-1 flex flex-col items-center">
                           <span className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider block text-center">
                             Cancelados
                           </span>
@@ -508,8 +508,8 @@ export default function CampaignClientView({
                           </div>
                         </div>
 
-                        {/* Col 4: Pendientes de respuesta (col-span-2) */}
-                        <div className="col-span-2 space-y-1 flex flex-col items-center">
+                        {/* Col 4: SIN RESPUESTA */}
+                        <div className="space-y-1 flex flex-col items-center">
                           <span className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider block text-center whitespace-nowrap">
                             SIN RESPUESTA
                           </span>
@@ -519,8 +519,8 @@ export default function CampaignClientView({
                           </div>
                         </div>
 
-                        {/* Col 5: Pendientes de entrega (col-span-2) */}
-                        <div className="col-span-2 space-y-1 flex flex-col items-center">
+                        {/* Col 5: NO ENTREGADO */}
+                        <div className="space-y-1 flex flex-col items-center">
                           <span className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider block text-center whitespace-nowrap">
                             NO ENTREGADO
                           </span>
@@ -529,54 +529,53 @@ export default function CampaignClientView({
                             <span>{pendingDelivery}</span>
                           </div>
                         </div>
+
+                        {/* Col 6: Acciones */}
+                        <div className="flex items-center gap-2 justify-center" onClick={(e) => e.stopPropagation()}>
+                          {/* Day Action */}
+                          {pendingDelivery > 0 && (
+                            <button
+                              onClick={() => handleSendAllForDate(dateStr)}
+                              disabled={sendingDate !== null || sendingAll || deletingDate !== null}
+                              className="inline-flex items-center gap-1 px-2.5 py-1 bg-green-600 hover:bg-green-500 disabled:opacity-50 text-white text-[10px] font-bold rounded-lg shadow-sm transition-all cursor-pointer whitespace-nowrap"
+                            >
+                              {sendingDate === dateStr ? (
+                                <>
+                                  <RefreshCw className="h-3 w-3 animate-spin" /> Enviando...
+                                </>
+                              ) : (
+                                <>
+                                  <Send className="h-2.5 w-2.5" /> Enviar día
+                                </>
+                              )}
+                            </button>
+                          )}
+
+                          {/* Delete Day Action */}
+                          <button
+                            onClick={() => handleDeleteAllForDate(dateStr)}
+                            disabled={deletingDate !== null || sendingDate !== null || sendingAll}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white text-[10px] font-bold rounded-lg shadow-sm transition-all cursor-pointer whitespace-nowrap"
+                          >
+                            {deletingDate === dateStr ? (
+                              <>
+                                <RefreshCw className="h-3 w-3 animate-spin" /> Eliminando...
+                              </>
+                            ) : (
+                              <>
+                                <X className="h-2.5 w-2.5 stroke-[3px]" /> Eliminar día
+                              </>
+                            )}
+                          </button>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-4" onClick={(e) => e.stopPropagation()}>
-                      {/* Day Action */}
-                      {pendingDelivery > 0 && (
-                        <button
-                          onClick={() => handleSendAllForDate(dateStr)}
-                          disabled={sendingDate !== null || sendingAll || deletingDate !== null}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 bg-green-600 hover:bg-green-500 disabled:opacity-50 text-white text-[10px] font-bold rounded-lg shadow-sm transition-all cursor-pointer"
-                        >
-                          {sendingDate === dateStr ? (
-                            <>
-                              <RefreshCw className="h-3 w-3 animate-spin" /> Enviando...
-                            </>
-                          ) : (
-                            <>
-                              <Send className="h-2.5 w-2.5" /> Enviar día
-                            </>
-                          )}
-                        </button>
-                      )}
-
-                      {/* Delete Day Action */}
-                      <button
-                        onClick={() => handleDeleteAllForDate(dateStr)}
-                        disabled={deletingDate !== null || sendingDate !== null || sendingAll}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white text-[10px] font-bold rounded-lg shadow-sm transition-all cursor-pointer"
-                      >
-                        {deletingDate === dateStr ? (
-                          <>
-                            <RefreshCw className="h-3 w-3 animate-spin" /> Eliminando...
-                          </>
-                        ) : (
-                          <>
-                            <X className="h-2.5 w-2.5 stroke-[3px]" /> Eliminar día
-                          </>
-                        )}
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Patient List container */}
-                  {!isCollapsed && (
-                    <div className="overflow-x-auto border-t border-slate-100 dark:border-zinc-800/40">
-                      <div className="min-w-[950px] divide-y divide-slate-100 dark:divide-zinc-800/40">
+                    {/* Patient List container */}
+                    {!isCollapsed && (
+                      <div className="border-t border-slate-100 dark:border-zinc-800/40 divide-y divide-slate-100 dark:divide-zinc-800/40">
                         {/* Header Row */}
-                        <div className="px-5 py-3 bg-slate-50/50 dark:bg-zinc-800/5 text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider grid grid-cols-[3fr_2fr_2fr_2fr_2fr_2fr] gap-4 pl-14 select-none">
+                        <div className="py-3 bg-slate-50/50 dark:bg-zinc-800/5 text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider grid grid-cols-[2.8fr_1.8fr_1.8fr_1.8fr_1.8fr_3fr] gap-4 pl-14 pr-5 select-none">
                           <div className="">Paciente</div>
                           <div className="text-center">RUT</div>
                           <div className="text-center">Hora</div>
@@ -586,7 +585,7 @@ export default function CampaignClientView({
                         </div>
 
                         {dateApps.map((app) => (
-                          <div key={app.id} className="py-2.5 px-5 hover:bg-slate-50/30 dark:hover:bg-zinc-800/10 transition-all grid grid-cols-[3fr_2fr_2fr_2fr_2fr_2fr] items-center gap-4 pl-14 text-sm text-slate-700 dark:text-zinc-300">
+                          <div key={app.id} className="py-2.5 hover:bg-slate-50/30 dark:hover:bg-zinc-800/10 transition-all grid grid-cols-[2.8fr_1.8fr_1.8fr_1.8fr_1.8fr_3fr] items-center gap-4 pl-14 pr-5 text-sm text-slate-700 dark:text-zinc-300">
                             <span className="font-bold text-slate-900 dark:text-white truncate">{toTitleCase(app.patientName)}</span>
                             
                             <span className="text-xs text-slate-500 dark:text-zinc-500 bg-slate-100 dark:bg-zinc-800 px-2 py-0.5 rounded font-mono text-center block w-fit mx-auto">{app.patientRut}</span>
@@ -657,12 +656,12 @@ export default function CampaignClientView({
                           </div>
                         ))}
                       </div>
-                    </div>
-                  )}
-                </div>
-              )
-            })
-          )}
+                    )}
+                  </div>
+                )
+              })
+            )}
+          </div>
         </div>
       </div>
 
