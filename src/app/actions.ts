@@ -404,8 +404,7 @@ export async function sendWhatsAppNotification(appointmentId: string) {
                 { type: 'text', text: campaignName },           // {{2}}
                 { type: 'text', text: formattedDate },          // {{3}}
                 { type: 'text', text: (app.time || '').slice(0, 5) }, // {{4}}
-                { type: 'text', text: app.establecimiento || 'CESFAM' }, // {{5}}
-                { type: 'text', text: observationsText }          // {{6}}
+                { type: 'text', text: app.establecimiento || 'CESFAM' }  // {{5}}
               ]
             }
           ]
