@@ -595,7 +595,7 @@ export default function CampaignClientView({
                         </div>
 
                         {dateApps.map((app) => (
-                          <div key={app.id} className="p-5 hover:bg-slate-50/30 dark:hover:bg-zinc-800/10 transition-all flex flex-row items-center gap-4 pl-14 text-sm text-slate-700 dark:text-zinc-300">
+                          <div key={app.id} className="py-2.5 px-5 hover:bg-slate-50/30 dark:hover:bg-zinc-800/10 transition-all flex flex-row items-center gap-4 pl-14 text-sm text-slate-700 dark:text-zinc-300">
                             <span className="w-64 md:w-72 lg:w-80 shrink-0 font-bold text-slate-900 dark:text-white truncate">{toTitleCase(app.patientName)}</span>
                             
                             <span className="w-28 shrink-0 text-xs text-slate-500 dark:text-zinc-500 bg-slate-100 dark:bg-zinc-800 px-2 py-0.5 rounded font-mono text-center">{app.patientRut}</span>
