@@ -219,7 +219,7 @@ export async function getConversationMessages(conversationId: string) {
     return await db.select()
       .from(schema.messageHistory)
       .where(eq(schema.messageHistory.conversationId, conversationId))
-      .orderBy(schema.messageHistory.id) // incremental sequence or uuid order
+      .orderBy(schema.messageHistory.createdAt) // Order chronologically by creation timestamp
   } catch (error) {
     console.error('Error fetching message history:', error)
     return []

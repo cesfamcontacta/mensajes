@@ -149,6 +149,7 @@ export const messageHistory = pgTable('message_history', {
   errorCode: text('error_code'),
   errorMessage: text('error_message'),
   pricingType: text('pricing_type'), // utility, marketing, service
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 })
 
 export const messageHistoryRelations = relations(messageHistory, ({ one }) => ({
