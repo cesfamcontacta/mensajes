@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
   const challenge = searchParams.get('hub.challenge')
 
   // Read verification token from environment variables
-  const VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN || 'CESFAM_CONTACTA_SECRET_TOKEN'
+  const VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN || 'cesfam_contacta_verify_token_2026'
 
   if (mode && token) {
     if (mode === 'subscribe' && token === VERIFY_TOKEN) {
