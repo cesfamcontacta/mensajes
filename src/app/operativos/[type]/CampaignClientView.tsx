@@ -423,11 +423,11 @@ export default function CampaignClientView({
             <p className="text-xs text-slate-500 dark:text-zinc-500 mt-0.5">Se encontraron {appointments.length} citas en este filtro.</p>
           </div>
           
-          {appointments.some(app => app.status === 'pending') && (
+          {appointments.length > 0 && (
             <button
               onClick={handleSendAll}
-              disabled={sendingAll}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-[11px] font-bold rounded-xl transition-all shadow-md shadow-blue-600/10 hover:shadow-blue-600/20 cursor-pointer"
+              disabled={sendingAll || !appointments.some(app => app.status === 'pending')}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:bg-slate-100 disabled:text-slate-400 dark:disabled:bg-zinc-800 dark:disabled:text-zinc-650 disabled:shadow-none text-white text-[11px] font-bold rounded-xl transition-all shadow-md shadow-blue-600/10 hover:shadow-blue-600/20 cursor-pointer"
             >
               {sendingAll ? (
                 <>
@@ -533,23 +533,21 @@ export default function CampaignClientView({
                         {/* Col 6: Acciones */}
                         <div className="flex items-center gap-2 justify-center" onClick={(e) => e.stopPropagation()}>
                           {/* Day Action */}
-                          {pendingDelivery > 0 && (
-                            <button
-                              onClick={() => handleSendAllForDate(dateStr)}
-                              disabled={sendingDate !== null || sendingAll || deletingDate !== null}
-                              className="inline-flex items-center gap-1 px-2.5 py-1 bg-green-600 hover:bg-green-500 disabled:opacity-50 text-white text-[10px] font-bold rounded-lg shadow-sm transition-all cursor-pointer whitespace-nowrap"
-                            >
-                              {sendingDate === dateStr ? (
-                                <>
-                                  <RefreshCw className="h-3 w-3 animate-spin" /> Enviando...
-                                </>
-                              ) : (
-                                <>
-                                  <Send className="h-2.5 w-2.5" /> Enviar día
-                                </>
-                              )}
-                            </button>
-                          )}
+                          <button
+                            onClick={() => handleSendAllForDate(dateStr)}
+                            disabled={sendingDate !== null || sendingAll || deletingDate !== null || pendingDelivery === 0}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-green-600 hover:bg-green-500 disabled:opacity-50 disabled:bg-slate-100 disabled:text-slate-400 dark:disabled:bg-zinc-800 dark:disabled:text-zinc-650 disabled:shadow-none text-white text-[10px] font-bold rounded-lg shadow-sm transition-all cursor-pointer whitespace-nowrap"
+                          >
+                            {sendingDate === dateStr ? (
+                              <>
+                                <RefreshCw className="h-3 w-3 animate-spin" /> Enviando...
+                              </>
+                            ) : (
+                              <>
+                                <Send className="h-2.5 w-2.5" /> Enviar día
+                              </>
+                            )}
+                          </button>
 
                           {/* Delete Day Action */}
                           <button
