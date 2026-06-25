@@ -716,7 +716,7 @@ export default function CampaignClientView({
                         className={`rounded-2xl px-3 py-2 text-xs shadow-sm leading-relaxed ${
                           msg.direction === 'inbound'
                             ? 'bg-white dark:bg-zinc-900 text-slate-900 dark:text-white rounded-tl-none border border-slate-100 dark:border-zinc-800/40'
-                            : `${theme.primaryBg} text-white rounded-tr-none`
+                            : 'bg-emerald-50 dark:bg-emerald-950/30 text-slate-800 dark:text-zinc-200 rounded-tr-none border border-emerald-100/50 dark:border-emerald-900/20'
                         }`}
                       >
                         {msg.templateName && (
@@ -735,38 +735,7 @@ export default function CampaignClientView({
               )}
             </div>
 
-            {/* Simulated actions & custom simulation response panel */}
-            {conversation && (
-              <div className="px-4 py-2 bg-slate-50 dark:bg-zinc-900/60 border-t border-slate-100 dark:border-zinc-800/30 flex flex-col gap-2">
-                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Simular Respuesta del Paciente:</div>
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    onClick={() => handleSimulateResponse('Sí, confirmo la cita')}
-                    disabled={sendingMessage}
-                    className={`px-2.5 py-1.5 bg-white dark:bg-zinc-900 hover:bg-slate-100 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-800 ${theme.primaryText} text-[10px] font-bold rounded-lg transition-all cursor-pointer`}
-                  >
-                    Sí, confirmo
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleSimulateResponse('No, cancelo la cita')}
-                    disabled={sendingMessage}
-                    className="px-2.5 py-1.5 bg-white dark:bg-zinc-900 hover:bg-slate-100 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-800 text-red-600 dark:text-red-400 text-[10px] font-bold rounded-lg transition-all cursor-pointer"
-                  >
-                    No, cancelo
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleSimulateResponse('¿Me podría reagendar la hora?')}
-                    disabled={sendingMessage}
-                    className="px-2.5 py-1.5 bg-white dark:bg-zinc-900 hover:bg-slate-100 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-800 text-amber-600 dark:text-amber-400 text-[10px] font-bold rounded-lg transition-all cursor-pointer"
-                  >
-                    Pedir Reagendar
-                  </button>
-                </div>
-              </div>
-            )}
+
 
             {/* Chat Input form */}
             <form onSubmit={handleSendMessage} className="p-3 bg-white dark:bg-zinc-950 border-t border-slate-200/60 dark:border-zinc-800/50 flex gap-2">
