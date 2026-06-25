@@ -576,17 +576,17 @@ export default function CampaignClientView({
                     <div className="overflow-x-auto border-t border-slate-100 dark:border-zinc-800/40">
                       <div className="min-w-[950px] divide-y divide-slate-100 dark:divide-zinc-800/40">
                         {/* Header Row */}
-                        <div className="px-5 py-3 bg-slate-50/50 dark:bg-zinc-800/5 text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider grid grid-cols-[2.5fr_1.2fr_1fr_1.5fr_2fr_0.8fr] gap-4 pl-14 select-none">
+                        <div className="px-5 py-3 bg-slate-50/50 dark:bg-zinc-800/5 text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider grid grid-cols-[3fr_2fr_2fr_2fr_2fr_2fr] gap-4 pl-14 select-none">
                           <div className="">Paciente</div>
                           <div className="text-center">RUT</div>
                           <div className="text-center">Hora</div>
-                          <div className="">Teléfono</div>
-                          <div className="">Estado</div>
+                          <div className="text-center">Teléfono</div>
+                          <div className="text-center">Estado</div>
                           <div className="text-center">Chat</div>
                         </div>
 
                         {dateApps.map((app) => (
-                          <div key={app.id} className="py-2.5 px-5 hover:bg-slate-50/30 dark:hover:bg-zinc-800/10 transition-all grid grid-cols-[2.5fr_1.2fr_1fr_1.5fr_2fr_0.8fr] items-center gap-4 pl-14 text-sm text-slate-700 dark:text-zinc-300">
+                          <div key={app.id} className="py-2.5 px-5 hover:bg-slate-50/30 dark:hover:bg-zinc-800/10 transition-all grid grid-cols-[3fr_2fr_2fr_2fr_2fr_2fr] items-center gap-4 pl-14 text-sm text-slate-700 dark:text-zinc-300">
                             <span className="font-bold text-slate-900 dark:text-white truncate">{toTitleCase(app.patientName)}</span>
                             
                             <span className="text-xs text-slate-500 dark:text-zinc-500 bg-slate-100 dark:bg-zinc-800 px-2 py-0.5 rounded font-mono text-center block w-fit mx-auto">{app.patientRut}</span>
@@ -596,11 +596,11 @@ export default function CampaignClientView({
                               {app.time.slice(0, 5)} hrs
                             </span>
                             
-                            <span className="text-xs text-slate-600 dark:text-zinc-400 truncate">
+                            <span className="text-xs text-slate-600 dark:text-zinc-400 truncate text-center block w-fit mx-auto">
                               {app.phone || 'Sin número'}
                             </span>
                             
-                            <div className="flex items-center">
+                            <div className="flex items-center justify-center">
                               {app.phone ? (
                                 <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${
                                   app.status === 'confirmed' 
