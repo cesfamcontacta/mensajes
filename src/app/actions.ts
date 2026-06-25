@@ -403,8 +403,7 @@ export async function sendWhatsAppNotification(appointmentId: string) {
                 {
                   type: 'image',
                   image: {
-                    // Use a hosted URL of the cesfam logo
-                    link: 'https://smartsalud-staging-new.web.app/cesfam_logo_correct_margins.png' 
+                    link: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://cesfamcontacta.vercel.app'}/cesfam_logo_correct_margins.png`
                   }
                 }
               ]
