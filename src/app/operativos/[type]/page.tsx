@@ -51,7 +51,7 @@ export default async function CampaignPage({ params }: PageProps) {
         
         <Link
           href={`/appointments/upload?campaign=${type}`}
-          className={`inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white rounded-xl shadow-md transition-all cursor-pointer ${buttonColor}`}
+          className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white rounded-xl shadow-md transition-all cursor-pointer bg-green-600 hover:bg-green-500 shadow-green-600/10 hover:shadow-green-600/20"
         >
           <FileSpreadsheet className="h-4.5 w-4.5" />
           Cargar Citas

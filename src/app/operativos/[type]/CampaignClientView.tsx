@@ -427,7 +427,7 @@ export default function CampaignClientView({
             <button
               onClick={handleSendAll}
               disabled={sendingAll}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 ${theme.primaryBg} ${theme.primaryHoverBg} disabled:opacity-50 text-white text-[11px] font-bold rounded-xl transition-all shadow-md ${theme.shadow} cursor-pointer`}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-[11px] font-bold rounded-xl transition-all shadow-md shadow-blue-600/10 hover:shadow-blue-600/20 cursor-pointer"
             >
               {sendingAll ? (
                 <>
@@ -459,7 +459,6 @@ export default function CampaignClientView({
               const pendingDelivery = dateApps.filter(a => a.status === 'pending').length
               const pendingReply = dateApps.filter(a => a.status === 'sent').length
               const isCollapsed = collapsedDates[dateStr] ?? false
-              const pct = total > 0 ? Math.round((sentTotal / total) * 100) : 0
 
               return (
                 <div key={dateStr} className="border-b border-slate-100 dark:border-zinc-800/50 last:border-b-0">
@@ -534,20 +533,12 @@ export default function CampaignClientView({
                     </div>
 
                     <div className="flex items-center gap-4" onClick={(e) => e.stopPropagation()}>
-                      {/* Day progress indicator */}
-                      <div className="flex items-center gap-2 text-xs text-slate-400 dark:text-zinc-500 font-semibold">
-                        <span>{pct}%</span>
-                        <div className="w-16 h-1.5 bg-slate-200 dark:bg-zinc-800 rounded-full overflow-hidden">
-                          <div className={`h-full ${theme.primaryBg}`} style={{ width: `${pct}%` }}></div>
-                        </div>
-                      </div>
-
                       {/* Day Action */}
                       {pendingDelivery > 0 && (
                         <button
                           onClick={() => handleSendAllForDate(dateStr)}
                           disabled={sendingDate !== null || sendingAll || deletingDate !== null}
-                          className={`inline-flex items-center gap-1 px-2.5 py-1 ${theme.primaryBg} ${theme.primaryHoverBg} disabled:opacity-50 text-white text-[10px] font-bold rounded-lg shadow-sm transition-all cursor-pointer`}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 bg-green-600 hover:bg-green-500 disabled:opacity-50 text-white text-[10px] font-bold rounded-lg shadow-sm transition-all cursor-pointer"
                         >
                           {sendingDate === dateStr ? (
                             <>
