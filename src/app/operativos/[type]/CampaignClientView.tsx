@@ -487,44 +487,44 @@ export default function CampaignClientView({
                         </div>
 
                         {/* Col 2: Confirmados (col-span-2) */}
-                        <div className="col-span-2 space-y-1">
-                          <span className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider block">
+                        <div className="col-span-2 space-y-1 flex flex-col items-center">
+                          <span className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider block text-center">
                             Confirmados
                           </span>
-                          <div className="flex items-center gap-1 text-xs font-semibold text-green-600 dark:text-green-400">
+                          <div className="flex items-center gap-1 text-xs font-semibold text-green-600 dark:text-green-400 justify-center">
                             <CheckCheck className="h-3.5 w-3.5 text-green-500 dark:text-green-400 stroke-[3px] shrink-0" />
                             <span>{confirmedTotal}</span>
                           </div>
                         </div>
 
                         {/* Col 3: Cancelados (col-span-2) */}
-                        <div className="col-span-2 space-y-1">
-                          <span className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider block">
+                        <div className="col-span-2 space-y-1 flex flex-col items-center">
+                          <span className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider block text-center">
                             Cancelados
                           </span>
-                          <div className="flex items-center gap-1 text-xs font-semibold text-red-600 dark:text-red-400">
+                          <div className="flex items-center gap-1 text-xs font-semibold text-red-600 dark:text-red-400 justify-center">
                             <X className="h-3.5 w-3.5 text-red-500 stroke-[3.5px] shrink-0" />
                             <span>{cancelledTotal}</span>
                           </div>
                         </div>
 
                         {/* Col 4: Pendientes de respuesta (col-span-2) */}
-                        <div className="col-span-2 space-y-1">
-                          <span className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider block whitespace-nowrap">
-                            Pendiente respuesta
+                        <div className="col-span-2 space-y-1 flex flex-col items-center">
+                          <span className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider block text-center whitespace-nowrap">
+                            SIN RESPUESTA
                           </span>
-                          <div className="flex items-center gap-1 text-xs font-semibold text-slate-500 dark:text-zinc-400">
+                          <div className="flex items-center gap-1 text-xs font-semibold text-slate-500 dark:text-zinc-400 justify-center">
                             <CheckCheck className="h-3.5 w-3.5 text-slate-400 dark:text-zinc-500 stroke-[3px] shrink-0" />
                             <span>{pendingReply}</span>
                           </div>
                         </div>
 
                         {/* Col 5: Pendientes de entrega (col-span-2) */}
-                        <div className="col-span-2 space-y-1">
-                          <span className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider block whitespace-nowrap">
-                            Pendiente entrega
+                        <div className="col-span-2 space-y-1 flex flex-col items-center">
+                          <span className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider block text-center whitespace-nowrap">
+                            NO ENTREGADO
                           </span>
-                          <div className="flex items-center gap-1 text-xs font-semibold text-slate-950 dark:text-zinc-300">
+                          <div className="flex items-center gap-1 text-xs font-semibold text-slate-950 dark:text-zinc-300 justify-center">
                             <X className="h-3.5 w-3.5 text-slate-950 dark:text-zinc-500 stroke-[3.5px] shrink-0" />
                             <span>{pendingDelivery}</span>
                           </div>
@@ -576,31 +576,31 @@ export default function CampaignClientView({
                     <div className="overflow-x-auto border-t border-slate-100 dark:border-zinc-800/40">
                       <div className="min-w-[950px] divide-y divide-slate-100 dark:divide-zinc-800/40">
                         {/* Header Row */}
-                        <div className="px-5 py-3 bg-slate-50/50 dark:bg-zinc-800/5 text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider flex flex-row items-center gap-4 pl-14 select-none">
-                          <div className="w-64 md:w-72 lg:w-80 shrink-0">Paciente</div>
-                          <div className="w-28 shrink-0 text-center">RUT</div>
-                          <div className="w-24 shrink-0 flex items-center gap-1.5 justify-center">Hora</div>
-                          <div className="w-44 md:w-48 shrink-0">Teléfono</div>
-                          <div className="w-40 md:w-44 shrink-0">Estado</div>
-                          <div className="w-10 shrink-0 text-center">Chat</div>
+                        <div className="px-5 py-3 bg-slate-50/50 dark:bg-zinc-800/5 text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider grid grid-cols-[2.5fr_1.2fr_1fr_1.5fr_2fr_0.8fr] gap-4 pl-14 select-none">
+                          <div className="">Paciente</div>
+                          <div className="text-center">RUT</div>
+                          <div className="text-center">Hora</div>
+                          <div className="">Teléfono</div>
+                          <div className="">Estado</div>
+                          <div className="text-center">Chat</div>
                         </div>
 
                         {dateApps.map((app) => (
-                          <div key={app.id} className="py-2.5 px-5 hover:bg-slate-50/30 dark:hover:bg-zinc-800/10 transition-all flex flex-row items-center gap-4 pl-14 text-sm text-slate-700 dark:text-zinc-300">
-                            <span className="w-64 md:w-72 lg:w-80 shrink-0 font-bold text-slate-900 dark:text-white truncate">{toTitleCase(app.patientName)}</span>
+                          <div key={app.id} className="py-2.5 px-5 hover:bg-slate-50/30 dark:hover:bg-zinc-800/10 transition-all grid grid-cols-[2.5fr_1.2fr_1fr_1.5fr_2fr_0.8fr] items-center gap-4 pl-14 text-sm text-slate-700 dark:text-zinc-300">
+                            <span className="font-bold text-slate-900 dark:text-white truncate">{toTitleCase(app.patientName)}</span>
                             
-                            <span className="w-28 shrink-0 text-xs text-slate-500 dark:text-zinc-500 bg-slate-100 dark:bg-zinc-800 px-2 py-0.5 rounded font-mono text-center">{app.patientRut}</span>
+                            <span className="text-xs text-slate-500 dark:text-zinc-500 bg-slate-100 dark:bg-zinc-800 px-2 py-0.5 rounded font-mono text-center block w-fit mx-auto">{app.patientRut}</span>
                             
-                            <span className="w-24 shrink-0 flex items-center gap-1.5 text-xs text-slate-600 dark:text-zinc-400 justify-center">
+                            <span className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-zinc-400 justify-center">
                               <Clock className="h-3.5 w-3.5 text-slate-400 shrink-0" />
                               {app.time.slice(0, 5)} hrs
                             </span>
                             
-                            <span className="w-44 md:w-48 shrink-0 flex items-center gap-2 text-xs text-slate-600 dark:text-zinc-400">
-                              <strong>Teléfono:</strong> {app.phone || 'Sin número'}
+                            <span className="text-xs text-slate-600 dark:text-zinc-400 truncate">
+                              {app.phone || 'Sin número'}
                             </span>
                             
-                            <div className="w-40 md:w-44 shrink-0 flex items-center">
+                            <div className="flex items-center">
                               {app.phone ? (
                                 <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${
                                   app.status === 'confirmed' 
@@ -624,12 +624,12 @@ export default function CampaignClientView({
                                   ) : app.status === 'sent' ? (
                                     <>
                                       <CheckCheck className="h-3.5 w-3.5 text-slate-400 dark:text-zinc-500 stroke-[3px] shrink-0" />
-                                      <span>Pendiente respuesta</span>
+                                      <span>SIN RESPUESTA</span>
                                     </>
                                   ) : (
                                     <>
                                       <X className="h-3.5 w-3.5 text-slate-950 dark:text-zinc-500 stroke-[3.5px] shrink-0" />
-                                      <span>Pendiente entrega</span>
+                                      <span>NO ENTREGADO</span>
                                     </>
                                   )}
                                 </span>
@@ -638,7 +638,7 @@ export default function CampaignClientView({
                               )}
                             </div>
                             
-                            <div className="w-10 shrink-0 flex items-center justify-center">
+                            <div className="flex items-center justify-center">
                               {app.phone && (
                                 <button
                                   onClick={(e) => {
