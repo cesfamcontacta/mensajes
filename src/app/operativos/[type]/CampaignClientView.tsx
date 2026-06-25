@@ -443,7 +443,7 @@ export default function CampaignClientView({
         </div>
 
         <div className="overflow-x-auto">
-          <div className="min-w-[950px] divide-y divide-slate-100 dark:divide-zinc-800/50">
+          <div className="min-w-[1050px] divide-y divide-slate-100 dark:divide-zinc-800/50">
             {appointments.length === 0 ? (
               <div className="p-12 text-center text-slate-500 dark:text-zinc-500">
                 <AlertCircle className="h-12 w-12 mx-auto text-slate-400 mb-4 opacity-50" />
@@ -475,7 +475,7 @@ export default function CampaignClientView({
                       )}
                       
                       {/* Aligned Grid */}
-                      <div className="flex-1 grid grid-cols-[2.8fr_1.8fr_1.8fr_1.8fr_1.8fr_3fr] gap-4 items-center">
+                      <div className="flex-1 grid grid-cols-[4fr_1.3fr_1.3fr_1.5fr_1.8fr_3.1fr] gap-4 items-center">
                         {/* Col 1: Fecha */}
                         <div className="space-y-1">
                           <span className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider block">
@@ -575,7 +575,7 @@ export default function CampaignClientView({
                     {!isCollapsed && (
                       <div className="border-t border-slate-100 dark:border-zinc-800/40 divide-y divide-slate-100 dark:divide-zinc-800/40">
                         {/* Header Row */}
-                        <div className="py-3 bg-slate-50/50 dark:bg-zinc-800/5 text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider grid grid-cols-[2.8fr_1.8fr_1.8fr_1.8fr_1.8fr_3fr] gap-4 pl-14 pr-5 select-none">
+                        <div className="py-3 bg-slate-50/50 dark:bg-zinc-800/5 text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider grid grid-cols-[4fr_1.3fr_1.3fr_1.5fr_1.8fr_3.1fr] gap-4 pl-14 pr-5 select-none">
                           <div className="">Paciente</div>
                           <div className="text-center">RUT</div>
                           <div className="text-center">Hora</div>
@@ -585,7 +585,7 @@ export default function CampaignClientView({
                         </div>
 
                         {dateApps.map((app) => (
-                          <div key={app.id} className="py-2.5 hover:bg-slate-50/30 dark:hover:bg-zinc-800/10 transition-all grid grid-cols-[2.8fr_1.8fr_1.8fr_1.8fr_1.8fr_3fr] items-center gap-4 pl-14 pr-5 text-sm text-slate-700 dark:text-zinc-300">
+                          <div key={app.id} className="py-2.5 hover:bg-slate-50/30 dark:hover:bg-zinc-800/10 transition-all grid grid-cols-[4fr_1.3fr_1.3fr_1.5fr_1.8fr_3.1fr] items-center gap-4 pl-14 pr-5 text-sm text-slate-700 dark:text-zinc-300">
                             <span className="font-bold text-slate-900 dark:text-white truncate">{toTitleCase(app.patientName)}</span>
                             
                             <span className="text-xs text-slate-500 dark:text-zinc-500 bg-slate-100 dark:bg-zinc-800 px-2 py-0.5 rounded font-mono text-center block w-fit mx-auto">{app.patientRut}</span>
