@@ -392,22 +392,11 @@ export async function sendWhatsAppNotification(appointmentId: string) {
       const payload = {
         type: 'template',
         template: {
-          name: 'reminder_operative',
+          name: 'reminder_operative_v2',
           language: {
-            code: 'es_CL' // Spanish (Chile)
+            code: 'es' // Spanish
           },
           components: [
-            {
-              type: 'header',
-              parameters: [
-                {
-                  type: 'image',
-                  image: {
-                    link: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://cesfamcontacta.vercel.app'}/cesfam_logo_correct_margins.png`
-                  }
-                }
-              ]
-            },
             {
               type: 'body',
               parameters: [
