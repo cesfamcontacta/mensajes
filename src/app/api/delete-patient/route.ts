@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/db/db'
 import * as schema from '@/db/schema'
-import { eq } from 'drizzle-orm'
+import { eq, like } from 'drizzle-orm'
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
@@ -14,10 +14,37 @@ export async function GET(request: NextRequest) {
   try {
     console.log('Production: Searching and deleting patient with RUT:', rut)
 
-    const patients = await db.select().from(schema.patient).where(eq(schema.patient.rut, rut))
+    const patients = await db.select().from(schema.patient).where(
+      eq(schema.patient.rut, rut)
+    )
 
+    // Fallback: If not found by exact RUT, search by name "Macarena" or partial RUT to debug
+    let debugMatches: any[] = []
     if (patients.length === 0) {
-      return NextResponse.json({ success: false, message: 'Patient not found' })
+      debugMatches = await db.select().from(schema.patient).where(
+        like(schema.patient.fullName, '%Macarena%')
+      )
+      
+      if (debugMatches.length > 0) {
+        return NextResponse.json({
+          success: false,
+          message: 'Patient not found by exact RUT, but found potential matches by name',
+          matches: debugMatches.map(p => ({ id: p.id, rut: p.rut, fullName: p.fullName }))
+        })
+      }
+      
+      // Let's also check by partial RUT without dots/dashes
+      const cleanRutPart = rut.replace(/[^0-9]/g, '')
+      const partialMatches = await db.select().from(schema.patient).where(
+        like(schema.patient.rut, `%${cleanRutPart}%`)
+      )
+      if (partialMatches.length > 0) {
+        return NextResponse.json({
+          success: false,
+          message: 'Patient not found by exact RUT, but found potential matches by partial RUT',
+          matches: partialMatches.map(p => ({ id: p.id, rut: p.rut, fullName: p.fullName }))
+        })
+      }
     }
 
     for (const patient of patients) {
